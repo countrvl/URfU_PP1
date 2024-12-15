@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Загрузка датасета</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #007bff, #6c757d);
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 90%;
+      }
+      h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #007bff;
+      }
+      form {
+        margin-top: 20px;
+      }
+      input[type="file"] {
+        margin: 20px 0;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+      }
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 6px;
+        width: 100%;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+      button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Загрузите CSV файл</h1>
+      <form action="/upload_csv/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required />
+        <button type="submit">Загрузить</button>
+      </form>
+    </div>
+  </body>
+</html>
