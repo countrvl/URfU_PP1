@@ -19,6 +19,8 @@ model = joblib.load(MODEL_PATH)
 scaler = joblib.load(SCALER_PATH)
 templates = Jinja2Templates(directory="templates")
 
+label_mapping = {0: 'Enrolled', 1: 'Graduate', 2: 'Dropout'}
+
 @app.get("/", response_class=HTMLResponse)
 async def upload_page(request: Request):
     """Стартовая страница с формой для загрузки файла"""
@@ -31,11 +33,10 @@ async def upload_csv(request: Request, file: UploadFile = File(...)):
         data = pd.read_csv(StringIO(contents.decode("utf-8")))
 
         if "id" in data.columns:
-            ids = data["id"]
-            data = data.drop(columns=["id"])
+            ids = data.pop("id")
         else:
             ids = range(1, len(data) + 1)
-
+     
         numerical_columns = [
             "Previous qualification (grade)", "Admission grade", "Age at enrollment",
             "Curricular units 1st sem (credited)", "Curricular units 1st sem (enrolled)",
@@ -51,22 +52,25 @@ async def upload_csv(request: Request, file: UploadFile = File(...)):
 
         predictions = model.predict(data)
         data["Prediction"] = predictions
+        data["Prediction_Label"] = data["Prediction"].map(label_mapping)
+
+        data.insert(0, "id", ids)
         data.to_csv(PREDICTION_FILE, index=False)
 
         unique, counts = np.unique(predictions, return_counts=True)
         plt.figure(figsize=(6, 4))
-        plt.bar(unique, counts, color='skyblue', edgecolor='black')
-        plt.xticks([0, 1, 2], ['1 класс', '2 класс', '3 класс'])
+        plt.bar([label_mapping[val] for val in unique], counts, color='skyblue', edgecolor='black')
         plt.title("Распределение предсказаний")
         plt.xlabel("Категория")
         plt.ylabel("Количество")
+        plt.xticks(rotation=0)
         img = io.BytesIO()
         plt.savefig(img, format='png')
         img.seek(0)
         graph_url = base64.b64encode(img.getvalue()).decode()
         plt.close()
 
-        preview_data = data.head().to_html(classes="table table-striped", index=False)
+        preview_data = data.head().to_html(classes="table table-striped table-bordered", index=False)
 
         return templates.TemplateResponse("results.html", {
             "request": request,
