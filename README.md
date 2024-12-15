@@ -13,7 +13,7 @@
 - Для запуска API необходимо перейти в директорию ./web_application и запустить команду uvicorn main:app --reload
 - После чего необходимо загрузить файл test.csv, который содержится в директории ./source
 
-Пример работы API:
+## Пример работы API:
 ![](https://github.com/countrvl/URfU_PP1/blob/main/source/web_client.gif)
 
 ## Начало работы:

@@ -5,9 +5,9 @@ import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
 import io
-import os
 from io import StringIO
 import base64
+import numpy as np
 
 app = FastAPI()
 
@@ -53,9 +53,10 @@ async def upload_csv(request: Request, file: UploadFile = File(...)):
         data["Prediction"] = predictions
         data.to_csv(PREDICTION_FILE, index=False)
 
+        unique, counts = np.unique(predictions, return_counts=True)
         plt.figure(figsize=(6, 4))
-        plt.hist(predictions, bins=2, color='skyblue', alpha=0.7, edgecolor='black')
-        plt.xticks([0, 1], ['Неуспешный', 'Успешный'])
+        plt.bar(unique, counts, color='skyblue', edgecolor='black')
+        plt.xticks([0, 1, 2], ['1 класс', '2 класс', '3 класс'])
         plt.title("Распределение предсказаний")
         plt.xlabel("Категория")
         plt.ylabel("Количество")
